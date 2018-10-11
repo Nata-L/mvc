@@ -1,11 +1,15 @@
 <?php
 
-function getInstance($modelName) {
+function getModel($modelName) {
     $model = file_get_contents(__DIR__ . '/models/' . $modelName . '.model');
+    return preg_split("/\R/", $model);
+}
+
+function getInstance($modelName) {
+    $model = getModel($modelName);
     $data = file_get_contents(__DIR__ . '/data/' . $modelName . '.data');
 
-    $model = explode("\n", $model);
-    $data = explode("\n", $data);
+    $data = explode(PHP_EOL, $data);
 
     $instance = [];
     
@@ -28,9 +32,8 @@ function getInstance($modelName) {
 }
 
 function saveInstance($modelName, $instance) {
-    $model = file_get_contents(__DIR__ . '/models/' . $modelName . '.model');
-    $model = explode("\n", $model);
-
+    $model = getModel($modelName);
+    
     $data = [];
 
     foreach ($model as $propertyName) {
@@ -39,6 +42,6 @@ function saveInstance($modelName, $instance) {
 
     return file_put_contents(
         __DIR__ . '/data/' . $modelName . '.data',
-        implode("\n", $data)
+        implode(PHP_EOL, $data)
     );
 }
